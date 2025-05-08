@@ -9,6 +9,7 @@ WORKDIR /buildapp
 
 # Instead of copying the whole source tree, first just copy these two files so that the `RUN go mod download`
 # step can be cached by the Docker builder
+
 COPY go.mod go.sum ./
 RUN go mod download
 
@@ -21,6 +22,8 @@ RUN go build -o /myapp
 ##############################################################################
 # STAGE 2: Copy the GO executable into a minimal image that's able to run Dynatrace
 FROM gcr.io/distroless/base
+
+COPY --from=builder /myapp /myapp
 
 EXPOSE 8080
 
